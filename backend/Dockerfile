@@ -1,4 +1,24 @@
-FROM ubuntu:latest
-LABEL authors="izzatbek"
+FROM gradle:8-jdk17 AS builder
 
-ENTRYPOINT ["top", "-b"]
+LABEL author="Soft Uzbek Slogan"
+
+WORKDIR /app
+
+COPY build.gradle settings.gradle ./
+COPY gradle gradle
+
+RUN ./gradlew dependencies --no-daemon
+
+COPY src src
+
+RUN ./gradlew bootJar --no-daemon -x test
+
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
+COPY --from=builder /build/libs/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
