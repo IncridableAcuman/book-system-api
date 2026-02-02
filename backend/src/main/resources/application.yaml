@@ -27,3 +27,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+
+jwt:
+  secret: ${SECRET}
+  access_time: ${ACCESS_TIME}
+  refresh_time: ${REFRESH_TIME}
