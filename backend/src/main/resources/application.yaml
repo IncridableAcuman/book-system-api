@@ -32,3 +32,4 @@ jwt:
   secret: ${SECRET}
   access_time: ${ACCESS_TIME}
   refresh_time: ${REFRESH_TIME}
+  reset_time: ${RESET_TIME}

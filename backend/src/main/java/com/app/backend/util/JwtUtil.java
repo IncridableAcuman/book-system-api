@@ -24,6 +24,9 @@ public class JwtUtil {
     @Value("${jwt.access_time}")
     private int accessTime;
 
+    @Value("${jwt.reset_time}")
+    private int resetTime;
+
     private Key key;
 
     @PostConstruct
@@ -51,6 +54,9 @@ public class JwtUtil {
         return generateToken(user,refreshTime);
     }
 
+    public String generateResetToken(User user){
+        return generateToken(user,resetTime);
+    }
     public Claims extractClaim(String token){
         return Jwts
                 .parserBuilder()
