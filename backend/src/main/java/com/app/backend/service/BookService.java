@@ -21,7 +21,7 @@ public class BookService {
     private final BookRepository bookRepository;
 
     public void findUser(User user){
-        bookRepository.findByUser(user).orElseThrow(()->new NotFoundException("User not found!"));
+        bookRepository.findFirstByUser(user).orElseThrow(()->new NotFoundException("User not found!"));
     }
 
     @Transactional
@@ -45,7 +45,7 @@ public class BookService {
 
     public List<BookResponse> getList(User user){
         findUser(user);
-        List<Book> books = bookRepository.findBuUser(user);
+        List<Book> books = bookRepository.findByUser(user);
         return books.stream().map(BookResponse::from).toList();
     }
 

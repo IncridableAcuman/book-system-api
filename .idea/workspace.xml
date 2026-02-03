@@ -5,20 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f8998ea3-8cbb-4b41-949b-63fa9b17dc9d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/dto/UserDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/enums/Genres.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/enums/Languages.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/service/TokenFacade.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/docker-compose.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/controller/BookController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/controller/BookController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/dto/BookRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/dto/BookRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/dto/BookResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/dto/BookResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/entity/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/entity/Book.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.dockerignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/BackendApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/BackendApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/repository/BookRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/repository/BookRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/service/AuthService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/service/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/service/BookService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/app/backend/util/JwtUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,8 +100,8 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/backend" />
+      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunManager">
@@ -144,7 +139,8 @@
       <workItem from="1770049459742" duration="3562000" />
       <workItem from="1770099508004" duration="5813000" />
       <workItem from="1770109649534" duration="4409000" />
-      <workItem from="1770114844975" duration="3508000" />
+      <workItem from="1770114844975" duration="4078000" />
+      <workItem from="1770132009058" duration="3658000" />
     </task>
     <servers />
   </component>
