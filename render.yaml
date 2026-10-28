@@ -53,7 +53,7 @@ services:
   # ----------------------------------------------------
   # React Frontend (Static Site)
   # ----------------------------------------------------
-  - type: static
+  - type: web
     name: book-system-frontend
     runtime: static
     rootDir: frontend
