@@ -1,12 +1,12 @@
 server:
-  port: ${PORT}
+  port: ${PORT:8080}
 
 spring:
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USER}
-    password: ${MAIL_PASS}
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USER:}
+    password: ${MAIL_PASS:}
     properties:
       mail:
         SMTP:
@@ -16,20 +16,39 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASS}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/book_system}
+    username: ${DB_USER:}
+    password: ${DB_PASS:}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:5}
+      minimum-idle: 1
+      idle-timeout: 300000
+      max-lifetime: 600000
+      connection-timeout: 30000
+
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${DDL_AUTO:update}
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: false
+
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
 
 jwt:
-  secret: ${SECRET}
-  access_time: ${ACCESS_TIME}
-  refresh_time: ${REFRESH_TIME}
-  reset_time: ${RESET_TIME}
+  secret: ${SECRET:uzbekistan_uzbekistan_1234567890_default_jwt_secret}
+  access_time: ${ACCESS_TIME:900000}
+  refresh_time: ${REFRESH_TIME:604800000}
+  reset_time: ${RESET_TIME:900000}
+
+cors:
+  allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173}
+
+cookie:
+  secure: ${COOKIE_SECURE:false}
+  same-site: ${COOKIE_SAME_SITE:Lax}

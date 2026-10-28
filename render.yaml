@@ -1,0 +1,68 @@
+services:
+  # ----------------------------------------------------
+  # Spring Boot Backend (Docker Web Service)
+  # ----------------------------------------------------
+  - type: web
+    name: book-system-backend
+    runtime: docker
+    dockerContext: backend
+    dockerfilePath: backend/Dockerfile
+    plan: free
+    region: frankfurt
+    envVars:
+      - key: PORT
+        value: 8080
+      # Neon PostgreSQL JDBC URL or Connection String
+      # e.g.: postgresql://user:pass@ep-cool-fog-123456.eu-central-1.aws.neon.tech/neondb?sslmode=require
+      # or: jdbc:postgresql://ep-cool-fog-123456.eu-central-1.aws.neon.tech:5432/neondb?sslmode=require
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      # Redis Connection (e.g. Upstash Redis URL: rediss://default:xxx@ep-xxx.upstash.io:6379)
+      - key: REDIS_URL
+        sync: false
+      # JWT Configuration
+      - key: SECRET
+        generateValue: true
+      - key: ACCESS_TIME
+        value: 900000
+      - key: REFRESH_TIME
+        value: 604800000
+      - key: RESET_TIME
+        value: 900000
+      # Mail Configuration (Gmail SMTP)
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASS
+        sync: false
+      # Security & CORS
+      - key: COOKIE_SECURE
+        value: true
+      - key: COOKIE_SAME_SITE
+        value: None
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+  # ----------------------------------------------------
+  # React Frontend (Static Site)
+  # ----------------------------------------------------
+  - type: static
+    name: book-system-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false

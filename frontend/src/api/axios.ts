@@ -13,8 +13,10 @@ export const setStoredToken = (token: string | null) => {
 
 export const getStoredToken = () => accessToken;
 
+const baseURL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 const api = axios.create({
-  baseURL: '',
+  baseURL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -80,7 +82,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await axios.get('/api/auth/refresh', { withCredentials: true });
+        const { data } = await axios.get(`${baseURL}/api/auth/refresh`, { withCredentials: true });
         const newToken = data.accessToken;
         setStoredToken(newToken);
         processQueue(null, newToken);

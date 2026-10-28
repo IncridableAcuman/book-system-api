@@ -1,0 +1,20 @@
+# IDE / Editor
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+
+# Environment & Secrets
+.env
+*.env.local
+
+# Build outputs
+**/build/
+**/dist/
+**/node_modules/
+**/out/
+
+# Logs
+*.log
