@@ -32,21 +32,29 @@ public class AuthService {
         }
         return tokenFacade.issueTokens(user,response);
     }
+    @Transactional
     public AuthResponse refresh(String refreshToken,HttpServletResponse response){
+        if (refreshToken == null || refreshToken.isBlank()){
+            throw new UnauthorizeException("Invalid refreshToken");
+        }
+        tokenFacade.validateToken(refreshToken);
         String email = tokenFacade.extractSubjectFromToken(refreshToken);
         User user = userService.findUser(email);
-        String cacheToken = tokenService.get(user.getId());
-        if (cacheToken == null || !cacheToken.equals(refreshToken)){
+        String dbToken = tokenService.get(user.getId());
+        if (dbToken == null || !dbToken.equals(refreshToken)){
             throw new UnauthorizeException("Invalid refreshToken");
         }
         return tokenFacade.issueTokens(user,response);
     }
     @Transactional
     public void logout(String refreshToken,HttpServletResponse response){
+        if (refreshToken == null || refreshToken.isBlank()){
+            throw new UnauthorizeException("Invalid or expired token");
+        }
         String email = tokenFacade.extractSubjectFromToken(refreshToken);
         User user = userService.findUser(email);
-        String cacheToken = tokenService.get(user.getId());
-        if (cacheToken == null || !cacheToken.equals(refreshToken)){
+        String dbToken = tokenService.get(user.getId());
+        if (dbToken == null || !dbToken.equals(refreshToken)){
             throw new UnauthorizeException("Invalid or expired token");
         }
         tokenFacade.validateToken(refreshToken);

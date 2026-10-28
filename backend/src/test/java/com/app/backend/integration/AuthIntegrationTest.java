@@ -2,6 +2,7 @@ package com.app.backend.integration;
 
 import com.app.backend.dto.*;
 import com.app.backend.entity.User;
+import com.app.backend.repository.RefreshTokenRepository;
 import com.app.backend.repository.UserRepository;
 import com.app.backend.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,10 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,13 +22,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,6 +40,9 @@ class AuthIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -54,38 +51,12 @@ class AuthIntegrationTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MockitoBean
-    private RedisTemplate<String, Object> redisTemplate;
-
-    @MockitoBean
     private JavaMailSender javaMailSender;
-
-    private final Map<String, Object> fakeRedisStore = new ConcurrentHashMap<>();
 
     @BeforeEach
     void setUp() {
+        refreshTokenRepository.deleteAll();
         userRepository.deleteAll();
-        fakeRedisStore.clear();
-
-        ValueOperations<String, Object> valueOps = mock(ValueOperations.class);
-        when(redisTemplate.opsForValue()).thenReturn(valueOps);
-
-        doAnswer(inv -> {
-            String key = inv.getArgument(0);
-            Object value = inv.getArgument(1);
-            fakeRedisStore.put(key, value);
-            return null;
-        }).when(valueOps).set(anyString(), any(), anyLong(), any(TimeUnit.class));
-
-        doAnswer(inv -> {
-            String key = inv.getArgument(0);
-            return fakeRedisStore.get(key);
-        }).when(valueOps).get(anyString());
-
-        doAnswer(inv -> {
-            String key = inv.getArgument(0);
-            fakeRedisStore.remove(key);
-            return true;
-        }).when(redisTemplate).delete(anyString());
     }
 
     @Test
@@ -111,6 +82,9 @@ class AuthIntegrationTest {
         assertThat(savedUser).isNotNull();
         assertThat(savedUser.getUsername()).isEqualTo("integratetest");
         assertThat(passwordEncoder.matches("strongPassword123", savedUser.getPassword())).isTrue();
+
+        // Verify refresh token stored in DB
+        assertThat(refreshTokenRepository.findByUserId(savedUser.getId())).isPresent();
 
         // 2. Duplicate registration should fail
         mockMvc.perform(post("/api/auth/register")
@@ -145,7 +119,6 @@ class AuthIntegrationTest {
 
         Cookie refreshCookie = loginResult.getResponse().getCookie("refreshToken");
         assertThat(refreshCookie).isNotNull();
-        String refreshTokenValue = refreshCookie.getValue();
 
         // 5. Refresh token using cookie
         MvcResult refreshResult = mockMvc.perform(get("/api/auth/refresh")
@@ -157,14 +130,19 @@ class AuthIntegrationTest {
         Cookie newRefreshCookie = refreshResult.getResponse().getCookie("refreshToken");
         assertThat(newRefreshCookie).isNotNull();
 
+        // Token in DB is updated with new refresh token
+        assertThat(refreshTokenRepository.findByUserId(savedUser.getId())).isPresent();
+        assertThat(refreshTokenRepository.findByUserId(savedUser.getId()).get().getToken())
+                .isEqualTo(newRefreshCookie.getValue());
+
         // 6. Logout
         mockMvc.perform(post("/api/auth/logout")
                         .cookie(newRefreshCookie))
                 .andExpect(status().isOk())
                 .andExpect(content().string("User logged out"));
 
-        // After logout, token should be removed from redis cache
-        assertThat(fakeRedisStore.get("refreshToken:" + savedUser.getId())).isNull();
+        // After logout, token should be removed from database
+        assertThat(refreshTokenRepository.findByUserId(savedUser.getId())).isEmpty();
     }
 
     @Test

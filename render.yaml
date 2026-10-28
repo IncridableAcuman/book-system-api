@@ -21,9 +21,6 @@ services:
         sync: false
       - key: DB_PASS
         sync: false
-      # Redis Connection (e.g. Upstash Redis URL: rediss://default:xxx@ep-xxx.upstash.io:6379)
-      - key: REDIS_URL
-        sync: false
       # JWT Configuration
       - key: SECRET
         generateValue: true

@@ -34,17 +34,12 @@ spring:
       hibernate:
         format_sql: false
 
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:}
-
 jwt:
   secret: ${SECRET:uzbekistan_uzbekistan_1234567890_default_jwt_secret}
   access_time: ${ACCESS_TIME:900000}
   refresh_time: ${REFRESH_TIME:604800000}
   reset_time: ${RESET_TIME:900000}
+  cleanup_cron: ${JWT_CLEANUP_CRON:0 0 3 * * ?}
 
 cors:
   allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173}

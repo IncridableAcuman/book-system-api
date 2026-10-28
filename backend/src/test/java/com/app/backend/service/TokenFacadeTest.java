@@ -54,7 +54,7 @@ class TokenFacadeTest {
     }
 
     @Test
-    @DisplayName("Should issue tokens, store in redis, set cookie, and return AuthResponse")
+    @DisplayName("Should issue tokens, store in database, set cookie, and return AuthResponse")
     void testIssueTokens() {
         when(jwtUtil.getAccessToken(user)).thenReturn("access-token-123");
         when(jwtUtil.getRefreshToken(user)).thenReturn("refresh-token-456");
@@ -103,7 +103,7 @@ class TokenFacadeTest {
     }
 
     @Test
-    @DisplayName("Should delete token from redis and clear cookie")
+    @DisplayName("Should delete token from database and clear cookie")
     void testDeleteTokenAndClearCookie() {
         tokenFacade.deleteTokenAndClearCookie(user, response);
 

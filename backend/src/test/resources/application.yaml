@@ -17,10 +17,6 @@ spring:
     port: 25
     username: test
     password: test
-  data:
-    redis:
-      host: localhost
-      port: 6379
 
 jwt:
   secret: testsecretkeyformockjwtutilmustbeatleast256bitslongsoitpasseshmacvalidation12345

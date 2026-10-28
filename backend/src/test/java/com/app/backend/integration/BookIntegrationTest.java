@@ -7,6 +7,7 @@ import com.app.backend.enums.Genres;
 import com.app.backend.enums.Languages;
 import com.app.backend.enums.Role;
 import com.app.backend.repository.BookRepository;
+import com.app.backend.repository.RefreshTokenRepository;
 import com.app.backend.repository.UserRepository;
 import com.app.backend.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
@@ -44,10 +44,10 @@ class BookIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private RefreshTokenRepository refreshTokenRepository;
 
-    @MockitoBean
-    private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @MockitoBean
     private JavaMailSender javaMailSender;
@@ -61,6 +61,7 @@ class BookIntegrationTest {
     @BeforeEach
     void setUp() {
         bookRepository.deleteAll();
+        refreshTokenRepository.deleteAll();
         userRepository.deleteAll();
 
         savedUser = new User();

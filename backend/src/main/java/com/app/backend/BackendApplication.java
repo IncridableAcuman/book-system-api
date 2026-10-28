@@ -5,10 +5,10 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvEntry;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableCaching
+@EnableScheduling
 public class BackendApplication {
 
 	public static void main(String[] args) {
@@ -23,20 +23,7 @@ public class BackendApplication {
 		// Normalize DB_URL / DATABASE_URL for Neon / cloud Postgres
 		DatabaseUrlParser.configureDatabaseProperties();
 
-		// Normalize REDIS_URL for Upstash / Render Redis if provided
-		configureRedisUrl();
-
 		SpringApplication.run(BackendApplication.class, args);
-	}
-
-	private static void configureRedisUrl() {
-		String redisUrl = System.getProperty("REDIS_URL");
-		if (redisUrl == null || redisUrl.isBlank()) {
-			redisUrl = System.getenv("REDIS_URL");
-		}
-		if (redisUrl != null && !redisUrl.isBlank()) {
-			System.setProperty("spring.data.redis.url", redisUrl);
-		}
 	}
 
 }
