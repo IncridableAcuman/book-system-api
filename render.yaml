@@ -45,7 +45,7 @@ services:
       - key: COOKIE_SAME_SITE
         value: None
       - key: ALLOWED_ORIGINS
-        sync: false
+        value: https://book-system-frontend.onrender.com,http://localhost:5173
 
   # ----------------------------------------------------
   # React Frontend (Static Site)
@@ -62,4 +62,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        sync: false
+        value: https://book-system-backend.onrender.com
