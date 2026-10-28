@@ -8,6 +8,7 @@ import com.app.backend.enums.Genres;
 import com.app.backend.enums.Languages;
 import com.app.backend.exception.NotFoundException;
 import com.app.backend.repository.BookRepository;
+import com.app.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     public void findUser(User user){
-        bookRepository.findFirstByUser(user).orElseThrow(()->new NotFoundException("User not found!"));
+        if (user == null || user.getId() == null || !userRepository.existsById(user.getId())){
+            throw new NotFoundException("User not found!");
+        }
     }
 
     @Transactional

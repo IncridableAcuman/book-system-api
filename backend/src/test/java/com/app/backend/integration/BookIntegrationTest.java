@@ -181,8 +181,8 @@ class BookIntegrationTest {
     }
 
     @Test
-    @DisplayName("Integration: Accessing book endpoints when user has no books throws NotFoundException")
-    void testUserWithNoBooksReturnsNotFound() throws Exception {
+    @DisplayName("Integration: New user with no books gets empty list successfully")
+    void testUserWithNoBooksReturnsEmptyList() throws Exception {
         // Create user with no books
         User userWithoutBooks = new User();
         userWithoutBooks.setUsername("nobooksuser");
@@ -193,10 +193,9 @@ class BookIntegrationTest {
 
         String tokenWithoutBooks = jwtUtil.getAccessToken(userWithoutBooks);
 
-        // Calling getList when no book exists triggers findUser throwing NotFoundException
         mockMvc.perform(get("/api/book")
                         .header("Authorization", "Bearer " + tokenWithoutBooks))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("User not found!"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
     }
 }

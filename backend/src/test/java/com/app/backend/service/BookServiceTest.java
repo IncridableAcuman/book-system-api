@@ -9,6 +9,7 @@ import com.app.backend.enums.Languages;
 import com.app.backend.enums.Role;
 import com.app.backend.exception.NotFoundException;
 import com.app.backend.repository.BookRepository;
+import com.app.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ class BookServiceTest {
     @Mock
     private BookRepository bookRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private BookService bookService;
 
@@ -46,6 +50,8 @@ class BookServiceTest {
         user.setUsername("bookuser");
         user.setEmail("bookuser@example.com");
         user.setRole(Role.USER);
+
+        lenient().when(userRepository.existsById(10L)).thenReturn(true);
 
         sampleBook = new Book();
         sampleBook.setId(1L);
@@ -73,19 +79,17 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("findUser should pass when book exists for user")
+    @DisplayName("findUser should pass when user exists in userRepository")
     void testFindUser_Success() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.of(sampleBook));
-
         bookService.findUser(user);
 
-        verify(bookRepository).findFirstByUser(user);
+        verify(userRepository).existsById(10L);
     }
 
     @Test
-    @DisplayName("findUser should throw NotFoundException when no book exists for user")
+    @DisplayName("findUser should throw NotFoundException when user does not exist")
     void testFindUser_NotFound() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.empty());
+        when(userRepository.existsById(10L)).thenReturn(false);
 
         assertThatThrownBy(() -> bookService.findUser(user))
                 .isInstanceOf(NotFoundException.class)
@@ -95,7 +99,6 @@ class BookServiceTest {
     @Test
     @DisplayName("Create: should successfully create and return BookResponse")
     void testCreate_Success() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.of(sampleBook));
         when(bookRepository.save(any(Book.class))).thenAnswer(inv -> {
             Book b = inv.getArgument(0);
             b.setId(2L);
@@ -117,7 +120,7 @@ class BookServiceTest {
     @Test
     @DisplayName("Create: should throw NotFoundException when findUser fails")
     void testCreate_UserNotFound() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.empty());
+        when(userRepository.existsById(10L)).thenReturn(false);
 
         assertThatThrownBy(() -> bookService.create(user, sampleRequest))
                 .isInstanceOf(NotFoundException.class)
@@ -129,7 +132,6 @@ class BookServiceTest {
     @Test
     @DisplayName("getList: should return all books for user")
     void testGetList_Success() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.of(sampleBook));
         when(bookRepository.findByUser(user)).thenReturn(List.of(sampleBook));
 
         List<BookResponse> list = bookService.getList(user);
@@ -142,7 +144,6 @@ class BookServiceTest {
     @Test
     @DisplayName("getBook: should return book by id")
     void testGetBook_Success() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.of(sampleBook));
         when(bookRepository.findById(1L)).thenReturn(Optional.of(sampleBook));
 
         BookResponse response = bookService.getBook(1L, user);
@@ -155,7 +156,6 @@ class BookServiceTest {
     @Test
     @DisplayName("getBook: should throw NotFoundException when book id does not exist")
     void testGetBook_NotFound() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.of(sampleBook));
         when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> bookService.getBook(99L, user))
@@ -166,7 +166,6 @@ class BookServiceTest {
     @Test
     @DisplayName("getBooksByAuthor: should return books filtered by author")
     void testGetBooksByAuthor() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.of(sampleBook));
         when(bookRepository.findByAuthor("Craig Walls")).thenReturn(List.of(sampleBook));
 
         List<BookResponse> result = bookService.getBooksByAuthor(user, "Craig Walls");
@@ -178,7 +177,6 @@ class BookServiceTest {
     @Test
     @DisplayName("getBooksByLanguages: should return books filtered by language")
     void testGetBooksByLanguages() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.of(sampleBook));
         when(bookRepository.findByLanguages(Languages.EN)).thenReturn(List.of(sampleBook));
 
         List<BookResponse> result = bookService.getBooksByLanguages(user, Languages.EN);
@@ -190,7 +188,6 @@ class BookServiceTest {
     @Test
     @DisplayName("getBooksByGenres: should return books filtered by genre")
     void testGetBooksByGenres() {
-        when(bookRepository.findFirstByUser(user)).thenReturn(Optional.of(sampleBook));
         when(bookRepository.findByGenres(Genres.SCIENCE)).thenReturn(List.of(sampleBook));
 
         List<BookResponse> result = bookService.getBooksByGenres(user, Genres.SCIENCE);
